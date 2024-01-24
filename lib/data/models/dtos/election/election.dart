@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'election.g.dart';
+
+@JsonSerializable()
 class Election {
   final String electionId;
   final DateTime startTime;
@@ -10,4 +15,8 @@ class Election {
     required this.endTime,
     required this.candidateIds,
   });
+
+  factory Election.fromJson(Map<String, dynamic> json) => _$ElectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ElectionToJson(this);
 }

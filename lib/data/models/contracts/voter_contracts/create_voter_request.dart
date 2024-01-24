@@ -1,5 +1,9 @@
-class Voter {
-  final String voterId;
+import 'package:json_annotation/json_annotation.dart';
+
+part 'create_voter_request.g.dart';
+
+@JsonSerializable()
+class CreateVoterRequest {
   final String nationalId;
   final String firstName;
   final String lastName;
@@ -12,8 +16,7 @@ class Voter {
   final String phoneNumber;
   final String passwordHash;
 
-  Voter({
-    required this.voterId,
+  CreateVoterRequest({
     required this.nationalId,
     required this.firstName,
     required this.lastName,
@@ -26,4 +29,8 @@ class Voter {
     required this.phoneNumber,
     required this.passwordHash,
   });
+
+  factory CreateVoterRequest.fromJson(Map<String, dynamic> json) => _$CreateVoterRequestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CreateVoterRequestToJson(this);
 }

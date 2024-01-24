@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:oop_electronic_voting/data/models/contracts/voter_contracts/create_voter_request.dart';
+import 'package:oop_electronic_voting/data/repositories/voter_repository.dart';
 import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined_container.dart';
-import 'package:oop_electronic_voting/presentation/pages/voter_home_page/voter_home_page.dart';
 
 import 'widgets/sign_up_prompt.dart';
 
@@ -9,8 +10,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NavigatorState nav = Navigator.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -33,8 +32,21 @@ class LoginPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     OutlinedButton(
-                      onPressed: () => nav.push(MaterialPageRoute(
-                          builder: (_) => const VoterHomePage())),
+                      // onPressed: () => nav.push(MaterialPageRoute(
+                      //     builder: (_) => const VoterHomePage())),
+                      onPressed: () async => await VoterRepository.createVoter(
+                          CreateVoterRequest(
+                              nationalId: "nationalId",
+                              firstName: "firstName",
+                              lastName: "lastName",
+                              middleName: "middleName",
+                              dateOfBirth: DateTime.now(),
+                              address: "address",
+                              postcode: "postcode",
+                              country: "country",
+                              email: "email",
+                              phoneNumber: "phoneNumber",
+                              passwordHash: "passwordHash")),
                       child: const Text("Login"),
                     ),
                   ],

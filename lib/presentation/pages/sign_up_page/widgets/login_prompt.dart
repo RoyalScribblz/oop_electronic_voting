@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:oop_electronic_voting/presentation/pages/login_page/login_page.dart';
 
-import '../../sign_up_page/sign_up_page.dart';
-
-class SignUpPrompt extends StatelessWidget {
-  const SignUpPrompt({
+class LoginPrompt extends StatelessWidget {
+  const LoginPrompt({
     super.key,
   });
 
@@ -14,14 +13,14 @@ class SignUpPrompt extends StatelessWidget {
 
     return GestureDetector(
       onTap: () => nav.push(MaterialPageRoute(
-          builder: (_) => const SignUpPage())),
+          builder: (_) => const LoginPage())),
       child: RichText(
         text: TextSpan(
-          text: "Don't have an account? ",
+          text: "Already have an account? ",
           style: TextStyle(color: theme.textTheme.bodyLarge?.color),
           children: [
             TextSpan(
-              text: "Sign Up",
+              text: "Login",
               style: TextStyle(
                 decoration: TextDecoration.underline,
                 color: theme.colorScheme.primary,
