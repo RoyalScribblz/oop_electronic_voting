@@ -1,11 +1,9 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-import 'widgets/login_prompt.dart';
-import '../../../data/models/contracts/voter_contracts/create_voter_request.dart';
+import '../../../data/models/dtos/voter/voter.dart';
+import '../voter_home_page/voter_home_page.dart';
 import '../../../data/repositories/voter_repository.dart';
 import '../common/widgets/outlined_container.dart';
 
@@ -42,11 +40,12 @@ class _SignUpPageState extends State<SignUpPage> {
   String country = "";
   String email = "";
   String phoneNumber = "";
-  String password = "";
-  String passwordConfirmation = "";
 
   @override
   Widget build(BuildContext context) {
+    NavigatorState nav = Navigator.of(context);
+    Credentials credentials = context.watch<Credentials>();
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -110,28 +109,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           const InputDecoration(labelText: "Phone Number"),
                       onChanged: (value) => phoneNumber = value,
                     ),
-                    TextField(
-                      decoration: const InputDecoration(labelText: "Password"),
-                      onChanged: (value) => password = value,
-                      obscureText: true,
-                    ),
-                    TextField(
-                      decoration:
-                          const InputDecoration(labelText: "Confirm Password"),
-                      onChanged: (value) => passwordConfirmation = value,
-                      obscureText: true,
-                    ),
                     const SizedBox(height: 30),
                     OutlinedButton(
                       onPressed: () async {
-                        if (password != passwordConfirmation) {
-                          print("Passwords do not match!");
-                          return;
-                        }
-
-                        String passwordHash =
-                            sha256.convert(utf8.encode(password)).toString();
-
                         DateTime? dateTime = DateTime.tryParse(dateOfBirthController.text);
 
                         if (dateTime == null) {
@@ -139,8 +119,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           return;
                         }
 
-                        CreateVoterRequest createVoteRequest =
-                            CreateVoterRequest(
+                        Voter voter = Voter(
+                          voterId: credentials.user.sub,
                           nationalId: nationalId,
                           firstName: firstName,
                           lastName: lastName,
@@ -151,10 +131,11 @@ class _SignUpPageState extends State<SignUpPage> {
                           country: country,
                           email: email,
                           phoneNumber: phoneNumber,
-                          passwordHash: passwordHash,
                         );
 
-                        await VoterRepository.createVoter(createVoteRequest);
+                        await VoterRepository.createVoter(voter);
+
+                        nav.push(MaterialPageRoute(builder: (_) => VoterHomePage(firstName: voter.firstName)));
                       },
                       child: const Text("Sign Up"),
                     ),
@@ -162,8 +143,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            const LoginPrompt(),
           ],
         ),
       ),

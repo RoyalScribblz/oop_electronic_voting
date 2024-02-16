@@ -5,26 +5,28 @@ import 'package:intl/intl.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dart';
 
 class VoterHomePage extends StatelessWidget {
-  const VoterHomePage({super.key});
+  final String firstName;
+
+  const VoterHomePage({super.key, required this.firstName});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
           child: Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Elections"),
+              Text("Welcome $firstName, you may vote in these elections:"),
             ],
           ),
-          SizedBox(height: 20),
-          ElectionPreview(),
-          SizedBox(height: 20),
-          ElectionPreview(),
-          SizedBox(height: 20),
-          ElectionPreview(),
+          const SizedBox(height: 20),
+          const ElectionPreview(),
+          const SizedBox(height: 20),
+          const ElectionPreview(),
+          const SizedBox(height: 20),
+          const ElectionPreview(),
         ],
       )),
     );
@@ -63,7 +65,7 @@ class ElectionPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     NavigatorState nav = Navigator.of(context);
 
-    DateTime electionTime = DateTime(2024, 1, 22, 20, 0, 0);
+    DateTime electionTime = DateTime(2024, 2, 2, 20, 0, 0);
     Duration difference = electionTime.difference(DateTime.now());
     String differenceText;
     if (difference.inDays >= 14) {
@@ -123,7 +125,7 @@ class ElectionPreview extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(Icons.person_outline),
-                          Text("John E. Ring")
+                          Text("Robert Anderson")
                         ],
                       ),
                     ),
@@ -139,7 +141,7 @@ class ElectionPreview extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(Icons.person_outline),
-                          Text("Moe Lester")
+                          Text("Neil Jackson")
                         ],
                       ),
                     ),
@@ -155,7 +157,7 @@ class ElectionPreview extends StatelessWidget {
                       child: Row(
                         children: [
                           Icon(Icons.person_outline),
-                          Text("Bing Chilling")
+                          Text("Michael Davies")
                         ],
                       ),
                     ),

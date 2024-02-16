@@ -15,7 +15,6 @@ class Voter {
   final String country;
   final String email;
   final String phoneNumber;
-  final String passwordHash;
 
   Voter({
     required this.voterId,
@@ -29,7 +28,6 @@ class Voter {
     required this.country,
     required this.email,
     required this.phoneNumber,
-    required this.passwordHash,
   });
 
   factory Voter.fromJson(Map<String, dynamic> json) => _$VoterFromJson(json);

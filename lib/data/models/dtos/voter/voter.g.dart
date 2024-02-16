@@ -18,7 +18,6 @@ Voter _$VoterFromJson(Map<String, dynamic> json) => Voter(
       country: json['country'] as String,
       email: json['email'] as String,
       phoneNumber: json['phoneNumber'] as String,
-      passwordHash: json['passwordHash'] as String,
     );
 
 Map<String, dynamic> _$VoterToJson(Voter instance) => <String, dynamic>{
@@ -33,5 +32,4 @@ Map<String, dynamic> _$VoterToJson(Voter instance) => <String, dynamic>{
       'country': instance.country,
       'email': instance.email,
       'phoneNumber': instance.phoneNumber,
-      'passwordHash': instance.passwordHash,
     };

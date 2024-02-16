@@ -30,7 +30,7 @@ class VotePage extends StatelessWidget {
   }
 }
 
-enum Candidate { john, moe, bing }
+enum Candidate { robert, neil, michael }
 
 class CandidateSelector extends StatefulWidget {
   const CandidateSelector({super.key});
@@ -40,7 +40,7 @@ class CandidateSelector extends StatefulWidget {
 }
 
 class _CandidateSelectorState extends State<CandidateSelector> {
-  Candidate? _candidate = Candidate.john;
+  Candidate? _candidate = Candidate.robert;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +53,9 @@ class _CandidateSelectorState extends State<CandidateSelector> {
       child: Column(
         children: <Widget>[
           ListTile(
-            title: const Text('John E. Ring'),
+            title: const Text('Robert Anderson'),
             leading: Radio<Candidate>(
-              value: Candidate.john,
+              value: Candidate.robert,
               groupValue: _candidate,
               onChanged: (Candidate? value) {
                 setState(() {
@@ -65,9 +65,9 @@ class _CandidateSelectorState extends State<CandidateSelector> {
             ),
           ),
           ListTile(
-            title: const Text('Moe Lester'),
+            title: const Text('Neil Jackson'),
             leading: Radio<Candidate>(
-              value: Candidate.moe,
+              value: Candidate.neil,
               groupValue: _candidate,
               onChanged: (Candidate? value) {
                 setState(() {
@@ -77,9 +77,9 @@ class _CandidateSelectorState extends State<CandidateSelector> {
             ),
           ),
           ListTile(
-            title: const Text('Bing Chilling'),
+            title: const Text('Michael Davies'),
             leading: Radio<Candidate>(
-              value: Candidate.bing,
+              value: Candidate.michael,
               groupValue: _candidate,
               onChanged: (Candidate? value) {
                 setState(() {

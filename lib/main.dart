@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'presentation/pages/login_page/login_page.dart';
+import 'presentation/pages/auth_zero_page/auth_zero_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(
         useMaterial3: true,
       ),
-      home: const LoginPage(),
+      home: const AuthZeroPage(),
     );
   }
 }
