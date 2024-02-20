@@ -8,7 +8,7 @@ import '../models/dtos/voter/voter.dart';
 class VoterRepository {
   static Future createVoter(Voter createRequest) async {
     final response = await http.post(
-      Uri.http("localhost:5238", "voters"),
+      Uri.http("localhost:5238", "voter"),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ class VoterRepository {
     }
 
     final response = await http.get(
-      Uri.http("localhost:5238", "voters/$voterId"),
+      Uri.http("localhost:5238", "voter/$voterId"),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
