@@ -6,7 +6,6 @@ import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dar
 
 class VoterHomePage extends StatelessWidget {
   final String firstName;
-
   const VoterHomePage({super.key, required this.firstName});
 
   @override
@@ -82,8 +81,8 @@ class ElectionPreview extends StatelessWidget {
     List<Color> colours = generateRandomColors(3);
 
     return GestureDetector(
-      onTap: () => nav.push(MaterialPageRoute(
-          builder: (_) => const VotePage())),
+      onTap: () =>
+          nav.push(MaterialPageRoute(builder: (_) => const VotePage())),
       child: Container(
         constraints: const BoxConstraints(
           maxWidth: 600,
