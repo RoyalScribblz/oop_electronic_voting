@@ -1,33 +1,39 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dart';
 
+import '../../../data/models/cubit_models/user.dart';
+
 class VoterHomePage extends StatelessWidget {
-  final String firstName;
-  const VoterHomePage({super.key, required this.firstName});
+  const VoterHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    User user = context.watch<UserCubit>().state;
+
     return Scaffold(
       body: SafeArea(
-          child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Welcome $firstName, you may vote in these elections:"),
-            ],
-          ),
-          const SizedBox(height: 20),
-          const ElectionPreview(),
-          const SizedBox(height: 20),
-          const ElectionPreview(),
-          const SizedBox(height: 20),
-          const ElectionPreview(),
-        ],
-      )),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Welcome ${user.voter!.firstName}, you may vote in the following elections:"),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const ElectionPreview(),
+            const SizedBox(height: 20),
+            const ElectionPreview(),
+            const SizedBox(height: 20),
+            const ElectionPreview(),
+          ],
+        ),
+      ),
     );
   }
 }

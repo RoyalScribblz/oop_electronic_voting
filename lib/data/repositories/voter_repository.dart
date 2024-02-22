@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/extensions/json_extensions.dart';
-import '../models/dtos/voter/voter.dart';
+import '../models/dtos/voter/voter_dto.dart';
 
 class VoterRepository {
-  static Future createVoter(Voter createRequest) async {
+  static Future createVoter(VoterDto createRequest) async {
     final response = await http.post(
       Uri.http("localhost:5238", "voter"),
       headers: {
@@ -22,7 +22,7 @@ class VoterRepository {
     }
   }
 
-  static Future<Voter?> getVoter(String? voterId) async {
+  static Future<VoterDto?> getVoter(String? voterId) async {
     if (voterId == null) {
       return null;
     }
@@ -37,7 +37,7 @@ class VoterRepository {
     );
 
     if (response.statusCode == 200) {
-      Voter voter = Voter.fromJson(response.toJson());
+      VoterDto voter = VoterDto.fromJson(response.toJson());
       return voter;
     }
 

@@ -1,20 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'candidate.g.dart';
+part 'candidate_dto.g.dart';
 
 @JsonSerializable()
-class Candidate {
+class CandidateDto {
   final String candidateId;
   final String name;
   final String imageUrl;
 
-  Candidate({
+  CandidateDto({
     required this.candidateId,
     required this.name,
     required this.imageUrl,
   });
 
-  factory Candidate.fromJson(Map<String, dynamic> json) => _$CandidateFromJson(json);
+  factory CandidateDto.fromJson(Map<String, dynamic> json) => _$CandidateDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CandidateToJson(this);
+  Map<String, dynamic> toJson() => _$CandidateDtoToJson(this);
 }

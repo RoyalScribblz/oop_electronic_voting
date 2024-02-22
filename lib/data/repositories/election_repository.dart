@@ -1,10 +1,10 @@
 import 'package:http/http.dart' as http;
 
-import '../models/dtos/election/election.dart';
+import '../models/dtos/election/election_dto.dart';
 import '../models/extensions/json_extensions.dart';
 
 class ElectionRepository {
-  static Future<List<Election>> getElections() async {
+  static Future<List<ElectionDto>> getElections() async {
     final response = await http.get(
       Uri.http("localhost:5238", "elections"),
       headers: {
@@ -16,7 +16,7 @@ class ElectionRepository {
 
     if (response.statusCode == 200) {
       return (response.toJson() as List)
-          .map((i) => Election.fromJson(i))
+          .map((i) => ElectionDto.fromJson(i))
           .toList();
     }
 

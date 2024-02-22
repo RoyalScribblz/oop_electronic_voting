@@ -1,14 +1,10 @@
-import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:auth0_flutter/auth0_flutter_web.dart';
-
 import 'package:flutter/material.dart';
-import 'package:oop_electronic_voting/data/repositories/voter_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined_container.dart';
 import 'package:oop_electronic_voting/presentation/pages/sign_up_page/sign_up_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/voter_home_page/voter_home_page.dart';
-import 'package:provider/provider.dart';
-
-import '../../../data/models/dtos/voter/voter.dart';
+import '../../controllers/cubits/user_cubit.dart';
 
 class AuthZeroPage extends StatefulWidget {
   const AuthZeroPage({super.key});
@@ -18,29 +14,25 @@ class AuthZeroPage extends StatefulWidget {
 }
 
 class _AuthZeroPageState extends State<AuthZeroPage> {
-  Credentials? _credentials;
-  Voter? _voter;
-  late Auth0Web auth0;
+  final UserCubit _userCubit = UserCubit();
+
+  final Auth0Web _auth = Auth0Web(
+    "dev-0zt0kwgn6ocwlua2.uk.auth0.com",
+    "7W1lNDLlTLsF166UAHGDBKxzmpCpNtdk",
+  );
 
   @override
   void initState() {
     super.initState();
-    auth0 = Auth0Web("dev-0zt0kwgn6ocwlua2.uk.auth0.com",
-        "7W1lNDLlTLsF166UAHGDBKxzmpCpNtdk");
 
-    auth0.onLoad().then((credentials) async {
-      Voter? voter = await VoterRepository.getVoter(credentials?.user.sub);
-
-      setState(() {
-        _credentials = credentials;
-        _voter = voter;
-      });
+    _auth.onLoad().then((credentials) async {
+      await _userCubit.setCredentialsAndVoter(credentials);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_credentials == null) {
+    if (_userCubit.state.credentials == null) {
       return Scaffold(
         body: SafeArea(
           child: Column(
@@ -50,13 +42,16 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
-                    onTap: () =>
-                        auth0.loginWithRedirect(redirectUrl: 'http://localhost:55298'),
+                    onTap: () => _auth.loginWithRedirect(
+                      redirectUrl: 'http://localhost:55298',
+                    ),
                     child: const OutlinedContainer(
                       maxWidth: 600,
                       borderRadius: 20,
                       innerPadding: 30,
-                      children: [Text("Log In")],
+                      children: [
+                        Text("Log In"),
+                      ],
                     ),
                   ),
                 ],
@@ -67,17 +62,16 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
       );
     }
 
-    if (_voter == null) {
-      return Provider<Credentials>(
-        create: (_) => _credentials!,
+    if (_userCubit.state.voter == null) {
+      return BlocProvider<UserCubit>(
+        create: (_) => _userCubit,
         child: const SignUpPage(),
       );
     }
 
-    return VoterHomePage(
-      firstName: _credentials?.user.nickname != null
-          ? _credentials!.user.nickname!
-          : "{Error}",
+    return BlocProvider(
+      create: (_) => _userCubit,
+      child: const VoterHomePage(),
     );
   }
 }

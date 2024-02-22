@@ -1,19 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ballot.dart';
+part of 'ballot_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Ballot _$BallotFromJson(Map<String, dynamic> json) => Ballot(
+BallotDto _$BallotDtoFromJson(Map<String, dynamic> json) => BallotDto(
       ballotId: json['ballotId'] as String,
       electionId: json['electionId'] as String,
       voterId: json['voterId'] as String,
       candidateId: json['candidateId'] as String,
     );
 
-Map<String, dynamic> _$BallotToJson(Ballot instance) => <String, dynamic>{
+Map<String, dynamic> _$BallotDtoToJson(BallotDto instance) => <String, dynamic>{
       'ballotId': instance.ballotId,
       'electionId': instance.electionId,
       'voterId': instance.voterId,

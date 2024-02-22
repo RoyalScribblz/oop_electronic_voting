@@ -1,8 +1,10 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/models/dtos/voter/voter.dart';
+import '../../../data/models/dtos/voter/voter_dto.dart';
 import '../voter_home_page/voter_home_page.dart';
 import '../../../data/repositories/voter_repository.dart';
 import '../common/widgets/outlined_container.dart';
@@ -44,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     NavigatorState nav = Navigator.of(context);
-    Credentials credentials = context.watch<Credentials>();
+    UserCubit user = context.watch<UserCubit>();
 
     return Scaffold(
       body: SafeArea(
@@ -112,15 +114,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 30),
                     OutlinedButton(
                       onPressed: () async {
-                        DateTime? dateTime = DateTime.tryParse(dateOfBirthController.text);
+                        DateTime? dateTime =
+                            DateTime.tryParse(dateOfBirthController.text);
 
                         if (dateTime == null) {
                           print("Date of birth is invalid!");
                           return;
                         }
 
-                        Voter voter = Voter(
-                          voterId: credentials.user.sub,
+                        VoterDto voter = VoterDto(
+                          voterId: user.state.credentials!.user.sub,
                           nationalId: nationalId,
                           firstName: firstName,
                           lastName: lastName,
@@ -133,9 +136,14 @@ class _SignUpPageState extends State<SignUpPage> {
                           phoneNumber: phoneNumber,
                         );
 
-                        await VoterRepository.createVoter(voter);
+                        user.createAndSetVoter(voter);
 
-                        nav.push(MaterialPageRoute(builder: (_) => VoterHomePage(firstName: voter.firstName)));
+                        nav.push(MaterialPageRoute(
+                          builder: (_) => BlocProvider(
+                            create: (_) => user,
+                            child: const VoterHomePage(),
+                          ),
+                        ));
                       },
                       child: const Text("Sign Up"),
                     ),
