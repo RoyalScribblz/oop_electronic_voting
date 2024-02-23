@@ -1,9 +1,12 @@
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:auth0_flutter/auth0_flutter_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oop_electronic_voting/data/models/cubit_models/user.dart';
 import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined_container.dart';
 import 'package:oop_electronic_voting/presentation/pages/sign_up_page/sign_up_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/voter_home_page/voter_home_page.dart';
+import 'package:provider/provider.dart';
 import '../../controllers/cubits/user_cubit.dart';
 
 class AuthZeroPage extends StatefulWidget {
@@ -14,8 +17,6 @@ class AuthZeroPage extends StatefulWidget {
 }
 
 class _AuthZeroPageState extends State<AuthZeroPage> {
-  final UserCubit _userCubit = UserCubit();
-
   final Auth0Web _auth = Auth0Web(
     "dev-0zt0kwgn6ocwlua2.uk.auth0.com",
     "7W1lNDLlTLsF166UAHGDBKxzmpCpNtdk",
@@ -26,13 +27,16 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
     super.initState();
 
     _auth.onLoad().then((credentials) async {
-      await _userCubit.setCredentialsAndVoter(credentials);
+      UserCubit userCubit = context.read<UserCubit>();
+      await userCubit.setCredentialsAndVoter(credentials);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_userCubit.state.credentials == null) {
+    UserCubit userCubit = context.watch<UserCubit>();
+
+    if (userCubit.state.credentials == null) {
       return Scaffold(
         body: SafeArea(
           child: Column(
@@ -62,16 +66,10 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
       );
     }
 
-    if (_userCubit.state.voter == null) {
-      return BlocProvider<UserCubit>(
-        create: (_) => _userCubit,
-        child: const SignUpPage(),
-      );
+    if (userCubit.state.voter == null) {
+      return const SignUpPage();
     }
 
-    return BlocProvider(
-      create: (_) => _userCubit,
-      child: const VoterHomePage(),
-    );
+    return const VoterHomePage();
   }
 }

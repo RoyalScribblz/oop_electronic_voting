@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'presentation/controllers/cubits/user_cubit.dart';
 import 'presentation/pages/auth_zero_page/auth_zero_page.dart';
 
 void main() {
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(
         useMaterial3: true,
       ),
-      home: const AuthZeroPage(),
+      home: BlocProvider(create: (_) => UserCubit(),
+      child: const AuthZeroPage()),
     );
   }
 }
