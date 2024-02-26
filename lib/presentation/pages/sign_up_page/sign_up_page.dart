@@ -136,9 +136,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           phoneNumber: phoneNumber,
                         );
 
-                        user.createAndSetVoter(voter);
+                        await user.createAndSetVoter(voter);
 
-                        nav.push(MaterialPageRoute(
+                        await nav.push(MaterialPageRoute(
                           builder: (_) => BlocProvider(
                             create: (_) => user,
                             child: const VoterHomePage(),
@@ -156,4 +156,15 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+}
+
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
+  }
+
 }
