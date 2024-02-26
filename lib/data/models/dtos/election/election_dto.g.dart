@@ -11,7 +11,7 @@ ElectionDto _$ElectionDtoFromJson(Map<String, dynamic> json) => ElectionDto(
       startTime: DateTime.parse(json['startTime'] as String),
       endTime: DateTime.parse(json['endTime'] as String),
       candidateIds: (json['candidateIds'] as List<dynamic>)
-          .map((e) => e as String)
+          .map((e) => CandidateDto.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/models/cubit_models/user.dart';
 import '../../../data/models/dtos/voter/voter_dto.dart';
 import '../voter_home_page/voter_home_page.dart';
 import '../../../data/repositories/voter_repository.dart';
@@ -18,6 +19,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController dateOfBirthController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   Future<void> _selectDateOfBirth(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -40,8 +42,17 @@ class _SignUpPageState extends State<SignUpPage> {
   String address = "";
   String postcode = "";
   String country = "";
-  String email = "";
   String phoneNumber = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    User user = context.read<UserCubit>().state;
+    if (user.credentials?.user.email != null) {
+      emailController.text = user.credentials!.user.email!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +114,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       onChanged: (value) => country = value,
                     ),
                     TextField(
+                      controller: emailController,
                       decoration: const InputDecoration(labelText: "Email"),
-                      onChanged: (value) => email = value,
                     ),
                     TextField(
                       decoration:
@@ -132,7 +143,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           address: address,
                           postcode: postcode,
                           country: country,
-                          email: email,
+                          email: emailController.text,
                           phoneNumber: phoneNumber,
                         );
 

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:oop_electronic_voting/data/models/dtos/candidate/candidate_dto.dart';
 
 part 'election_dto.g.dart';
 
@@ -7,7 +8,7 @@ class ElectionDto {
   final String electionId;
   final DateTime startTime;
   final DateTime endTime;
-  final List<String> candidateIds;
+  final List<CandidateDto> candidateIds;
 
   ElectionDto({
     required this.electionId,

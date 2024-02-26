@@ -3,6 +3,7 @@ import 'package:auth0_flutter/auth0_flutter_web.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oop_electronic_voting/data/models/cubit_models/user.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined_container.dart';
 import 'package:oop_electronic_voting/presentation/pages/sign_up_page/sign_up_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/voter_home_page/voter_home_page.dart';
@@ -70,6 +71,9 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
       return const SignUpPage();
     }
 
-    return const VoterHomePage();
+    return BlocProvider(
+      create: (_) => ElectionsCubit(),
+      child: const VoterHomePage(),
+    );
   }
 }
