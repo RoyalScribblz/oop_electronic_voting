@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../models/extensions/json_extensions.dart';
 import '../models/dtos/voter/voter_dto.dart';
 
 class VoterRepository {
@@ -37,7 +36,7 @@ class VoterRepository {
     );
 
     if (response.statusCode == 200) {
-      VoterDto voter = VoterDto.fromJson(response.toJson());
+      VoterDto voter = VoterDto.fromJson(json.decode(response.body));
       return voter;
     }
 

@@ -1,6 +1,7 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:provider/provider.dart';
 
@@ -150,8 +151,11 @@ class _SignUpPageState extends State<SignUpPage> {
                         await user.createAndSetVoter(voter);
 
                         await nav.push(MaterialPageRoute(
-                          builder: (_) => BlocProvider(
-                            create: (_) => user,
+                          builder: (_) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider(create: (_) => user),
+                              BlocProvider(create: (_) => ElectionsCubit()),
+                            ],
                             child: const VoterHomePage(),
                           ),
                         ));

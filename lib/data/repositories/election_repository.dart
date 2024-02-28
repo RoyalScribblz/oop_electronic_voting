@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 import '../models/dtos/election/election_dto.dart';
-import '../models/extensions/json_extensions.dart';
 
 class ElectionRepository {
   static Future<List<ElectionDto>> getElections() async {
@@ -15,8 +16,8 @@ class ElectionRepository {
     );
 
     if (response.statusCode == 200) {
-      return (response.toJson() as List)
-          .map((i) => ElectionDto.fromJson(i))
+      return (json.decode(response.body) as List)
+          .map((e) => ElectionDto.fromJson(Map<String, dynamic>.from(e)))
           .toList();
     }
 
