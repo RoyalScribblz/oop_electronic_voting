@@ -6,12 +6,14 @@ part 'election_dto.g.dart';
 @JsonSerializable()
 class ElectionDto {
   final String electionId;
+  final String name;
   final DateTime startTime;
   final DateTime endTime;
   final List<CandidateDto> candidates;
 
   ElectionDto({
     required this.electionId,
+    required this.name,
     required this.startTime,
     required this.endTime,
     required this.candidates,

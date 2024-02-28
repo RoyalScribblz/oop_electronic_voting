@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oop_electronic_voting/data/repositories/ballot_repository.dart';
+import 'package:oop_electronic_voting/data/repositories/contracts/ballot/create_ballot_request.dart';
+
+import '../../../data/models/dtos/ballot/ballot_dto.dart';
+import '../../../data/models/dtos/candidate/candidate_dto.dart';
+import '../../controllers/cubits/vote_page_cubit.dart';
 
 class VotePage extends StatelessWidget {
   const VotePage({super.key});
@@ -6,6 +13,7 @@ class VotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     NavigatorState nav = Navigator.of(context);
+    VotePageCubit votePageCubit = context.watch<VotePageCubit>();
 
     return Scaffold(
       body: SafeArea(
@@ -15,9 +23,24 @@ class VotePage extends StatelessWidget {
               child: Column(
                 children: [
                   const Text("Vote"),
-                  const CandidateSelector(),
+                  BlocProvider(
+                    create: (_) => votePageCubit,
+                    child: const CandidateSelector(),
+                  ),
                   OutlinedButton(
-                    onPressed: () => nav.pop(),
+                    onPressed: () async {
+                      if (votePageCubit.state.selectedCandidate != null) {
+                        BallotDto ballot = await BallotRepository.createBallot(
+                          CreateBallotRequest(
+                            electionId: votePageCubit.state.election.electionId,
+                            voterId: ,
+                            candidateId: votePageCubit.state.selectedCandidate?.candidateId,
+                          ),
+                        );
+                      }
+
+                      print(votePageCubit.state.selectedCandidate?.name);
+                    },
                     child: const Text("Submit Vote"),
                   )
                 ],
@@ -30,20 +53,13 @@ class VotePage extends StatelessWidget {
   }
 }
 
-enum Candidate { robert, neil, michael }
-
-class CandidateSelector extends StatefulWidget {
+class CandidateSelector extends StatelessWidget {
   const CandidateSelector({super.key});
 
   @override
-  State<CandidateSelector> createState() => _CandidateSelectorState();
-}
-
-class _CandidateSelectorState extends State<CandidateSelector> {
-  Candidate? _candidate = Candidate.robert;
-
-  @override
   Widget build(BuildContext context) {
+    VotePageCubit votePageCubit = context.watch<VotePageCubit>();
+
     return Container(
       constraints: const BoxConstraints(maxWidth: 600),
       decoration: BoxDecoration(
@@ -52,42 +68,17 @@ class _CandidateSelectorState extends State<CandidateSelector> {
       ),
       child: Column(
         children: <Widget>[
-          ListTile(
-            title: const Text('Robert Anderson'),
-            leading: Radio<Candidate>(
-              value: Candidate.robert,
-              groupValue: _candidate,
-              onChanged: (Candidate? value) {
-                setState(() {
-                  _candidate = value;
-                });
-              },
+          for (CandidateDto candidate
+              in votePageCubit.state.election.candidates)
+            ListTile(
+              title: Text(candidate.name),
+              leading: Radio<CandidateDto>(
+                value: candidate,
+                groupValue: votePageCubit.state.selectedCandidate,
+                onChanged: (CandidateDto? value) =>
+                    votePageCubit.setSelectedCandidate(value),
+              ),
             ),
-          ),
-          ListTile(
-            title: const Text('Neil Jackson'),
-            leading: Radio<Candidate>(
-              value: Candidate.neil,
-              groupValue: _candidate,
-              onChanged: (Candidate? value) {
-                setState(() {
-                  _candidate = value;
-                });
-              },
-            ),
-          ),
-          ListTile(
-            title: const Text('Michael Davies'),
-            leading: Radio<Candidate>(
-              value: Candidate.michael,
-              groupValue: _candidate,
-              onChanged: (Candidate? value) {
-                setState(() {
-                  _candidate = value;
-                });
-              },
-            ),
-          ),
         ],
       ),
     );

@@ -1,14 +1,16 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:oop_electronic_voting/extensions/datetime_extensions.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dart';
 
 import '../../../data/models/cubit_models/user.dart';
+import '../../../data/models/dtos/candidate/candidate_dto.dart';
 import '../../../data/models/dtos/election/election_dto.dart';
+import '../../controllers/cubits/election_cubit.dart';
+import '../../controllers/cubits/vote_page_cubit.dart';
 
 class VoterHomePage extends StatefulWidget {
   const VoterHomePage({super.key});
@@ -38,11 +40,13 @@ class _VoterHomePageState extends State<VoterHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Welcome ${user.voter!.firstName}, you may vote in the following elections:"),
+                Text(
+                  "Welcome ${user.voter!.firstName}, you may vote in the following elections:",
+                  style: const TextStyle(fontSize: 20),
+                ),
               ],
             ),
-            for (ElectionDto election in elections)
-              ElectionPreview(election)
+            for (ElectionDto election in elections) ElectionPreview(election)
           ],
         ),
       ),
@@ -53,59 +57,28 @@ class _VoterHomePageState extends State<VoterHomePage> {
 class ElectionPreview extends StatelessWidget {
   final ElectionDto election;
 
-  const ElectionPreview(this.election, {
+  const ElectionPreview(
+    this.election, {
     super.key,
   });
-
-  List<Color> generateRandomColors(int numberOfColors) {
-    final List<Color> colors = [];
-    final Random random = Random();
-
-    // Generate a random starting point on the color wheel
-    final double startHue = random.nextDouble() * 360.0;
-
-    // Calculate the hue step size to equally space the colors
-    final double hueStep = 360.0 / numberOfColors;
-
-    for (int i = 0; i < numberOfColors; i++) {
-      // Calculate the hue for this color
-      final double hue = (startHue + i * hueStep) % 360.0;
-
-      // Convert the HSL color to RGB
-      final Color color = HSLColor.fromAHSL(1.0, hue, 1.0, 0.5).toColor();
-
-      colors.add(color);
-    }
-
-    return colors;
-  }
 
   @override
   Widget build(BuildContext context) {
     NavigatorState nav = Navigator.of(context);
-
-    DateTime electionTime = DateTime(2024, 2, 2, 20, 0, 0);
-    Duration difference = electionTime.difference(DateTime.now());
-    String differenceText;
-    if (difference.inDays >= 14) {
-      differenceText = '${difference.inDays ~/ 7} weeks remaining';
-    } else if (difference.inDays >= 2) {
-      differenceText = '${difference.inDays} days remaining';
-    } else if (difference.inHours >= 2) {
-      differenceText = '${difference.inHours} hours remaining';
-    } else if (difference.inMinutes >= 2) {
-      differenceText = '${difference.inMinutes} minutes remaining';
-    } else {
-      differenceText = '${difference.inSeconds} seconds remaining';
-    }
-    List<Color> colours = generateRandomColors(3);
+    String remainingTime = election.endTime.remainingTimeString();
 
     return Column(
       children: [
         const SizedBox(height: 20),
         GestureDetector(
-          onTap: () =>
-              nav.push(MaterialPageRoute(builder: (_) => const VotePage())),
+          onTap: () => nav.push(
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => VotePageCubit(election),
+                child: const VotePage(),
+              ),
+            ),
+          ),
           child: Container(
             constraints: const BoxConstraints(
               maxWidth: 600,
@@ -125,9 +98,9 @@ class ElectionPreview extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(election.electionId),
+                          Text(election.name),
                           Text(
-                              "Ending ${DateFormat('dd/MM/yyyy HH:mm:ss').format(electionTime)} ($differenceText)")
+                              "Ending ${DateFormat('dd/MM/yyyy HH:mm:ss').format(election.endTime)} ($remainingTime)"),
                         ],
                       ),
                     ],
@@ -136,54 +109,32 @@ class ElectionPreview extends StatelessWidget {
                   Row(
                     children: [
                       const Text("Candidates:"),
-                      const SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: colours[0]),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(3),
-                          child: Row(
-                            children: [
-                              Icon(Icons.person_outline),
-                              Text("Robert Anderson")
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: colours[1]),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(3),
-                          child: Row(
-                            children: [
-                              Icon(Icons.person_outline),
-                              Text("Neil Jackson")
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: colours[2]),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(3),
-                          child: Row(
-                            children: [
-                              Icon(Icons.person_outline),
-                              Text("Michael Davies")
-                            ],
-                          ),
-                        ),
-                      ),
+                      for (CandidateDto candidate in election.candidates)
+                        Row(
+                          children: [
+                            const SizedBox(width: 10),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Color(
+                                    int.parse(
+                                        "0xFF${candidate.colour.toUpperCase()}"),
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.person_outline),
+                                    Text(candidate.name)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                     ],
                   ),
                 ],

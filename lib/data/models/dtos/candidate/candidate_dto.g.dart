@@ -10,6 +10,7 @@ CandidateDto _$CandidateDtoFromJson(Map<String, dynamic> json) => CandidateDto(
       candidateId: json['candidateId'] as String,
       name: json['name'] as String,
       imageUrl: json['imageUrl'] as String,
+      colour: json['colour'] as String,
     );
 
 Map<String, dynamic> _$CandidateDtoToJson(CandidateDto instance) =>
@@ -17,4 +18,5 @@ Map<String, dynamic> _$CandidateDtoToJson(CandidateDto instance) =>
       'candidateId': instance.candidateId,
       'name': instance.name,
       'imageUrl': instance.imageUrl,
+      'colour': instance.colour,
     };
