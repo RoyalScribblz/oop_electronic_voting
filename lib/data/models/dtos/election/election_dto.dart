@@ -10,6 +10,7 @@ class ElectionDto {
   final DateTime startTime;
   final DateTime endTime;
   final List<CandidateDto> candidates;
+  final int voteCount;
 
   ElectionDto({
     required this.electionId,
@@ -17,6 +18,7 @@ class ElectionDto {
     required this.startTime,
     required this.endTime,
     required this.candidates,
+    required this.voteCount
   });
 
   factory ElectionDto.fromJson(Map<String, dynamic> json) => _$ElectionDtoFromJson(json);

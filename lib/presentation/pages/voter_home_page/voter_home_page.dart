@@ -6,10 +6,9 @@ import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dart';
 
-import '../../../data/models/cubit_models/user.dart';
 import '../../../data/models/dtos/candidate/candidate_dto.dart';
 import '../../../data/models/dtos/election/election_dto.dart';
-import '../../controllers/cubits/election_cubit.dart';
+import '../../../data/models/dtos/voter/voter_dto.dart';
 import '../../controllers/cubits/vote_page_cubit.dart';
 
 class VoterHomePage extends StatefulWidget {
@@ -30,8 +29,20 @@ class _VoterHomePageState extends State<VoterHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.watch<UserCubit>().state;
-    List<ElectionDto> elections = context.watch<ElectionsCubit>().state;
+    UserCubit userCubit = context.watch<UserCubit>();
+
+    List<ElectionDto> completedElections = context
+        .watch<ElectionsCubit>().state
+        .where((e) => e.endTime.isBefore(DateTime.now()))
+        .toList();
+
+    List<ElectionDto> activeElections = context
+        .watch<ElectionsCubit>().state
+        .where((e) => !completedElections.contains(e))
+        .toList();
+
+    completedElections.sort((a, b) => a.endTime.compareTo(b.endTime));
+    activeElections.sort((a, b) => a.endTime.compareTo(b.endTime));
 
     return Scaffold(
       body: SafeArea(
@@ -41,12 +52,16 @@ class _VoterHomePageState extends State<VoterHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Welcome ${user.voter!.firstName}, you may vote in the following elections:",
+                  "Welcome ${userCubit.state.voter!.firstName}, you may vote in the following elections:",
                   style: const TextStyle(fontSize: 20),
                 ),
               ],
             ),
-            for (ElectionDto election in elections) ElectionPreview(election)
+            for (ElectionDto election in activeElections)
+              ElectionPreview(election, userCubit.state.voter!),
+            const Text("Finished Elections:", style: TextStyle(fontSize: 20)),
+            for (ElectionDto election in completedElections)
+              ElectionPreview(election, userCubit.state.voter!),
           ],
         ),
       ),
@@ -56,9 +71,11 @@ class _VoterHomePageState extends State<VoterHomePage> {
 
 class ElectionPreview extends StatelessWidget {
   final ElectionDto election;
+  final VoterDto voter;
 
   const ElectionPreview(
-    this.election, {
+    this.election,
+    this.voter, {
     super.key,
   });
 
@@ -74,7 +91,7 @@ class ElectionPreview extends StatelessWidget {
           onTap: () => nav.push(
             MaterialPageRoute(
               builder: (_) => BlocProvider(
-                create: (_) => VotePageCubit(election),
+                create: (_) => VotePageCubit(election, voter),
                 child: const VotePage(),
               ),
             ),
@@ -137,6 +154,8 @@ class ElectionPreview extends StatelessWidget {
                         )
                     ],
                   ),
+                  if (election.endTime.isBefore(DateTime.now()))
+                    Text("Votes: ${election.voteCount}")
                 ],
               ),
             ),

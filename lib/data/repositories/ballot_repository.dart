@@ -6,7 +6,7 @@ import 'package:oop_electronic_voting/data/repositories/contracts/ballot/create_
 import '../models/dtos/ballot/ballot_dto.dart';
 
 class BallotRepository {
-  static Future<BallotDto> createBallot(CreateBallotRequest createRequest) async {
+  static Future<BallotDto?> createBallot(CreateBallotRequest createRequest) async {
     final response = await http.post(
       Uri.http("localhost:5238", "ballot"),
       headers: {
@@ -18,7 +18,7 @@ class BallotRepository {
     );
 
     if (response.statusCode != 201) {
-      throw Exception();
+      return null;
     } else {
       return BallotDto.fromJson(json.decode(response.body));
     }

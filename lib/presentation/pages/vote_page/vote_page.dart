@@ -30,16 +30,18 @@ class VotePage extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () async {
                       if (votePageCubit.state.selectedCandidate != null) {
-                        BallotDto ballot = await BallotRepository.createBallot(
+                        BallotDto? ballot = await BallotRepository.createBallot(
                           CreateBallotRequest(
                             electionId: votePageCubit.state.election.electionId,
-                            voterId: ,
-                            candidateId: votePageCubit.state.selectedCandidate?.candidateId,
+                            voterId: votePageCubit.state.voter.voterId,
+                            candidateId: votePageCubit.state.selectedCandidate!.candidateId,
                           ),
                         );
-                      }
 
-                      print(votePageCubit.state.selectedCandidate?.name);
+                        if (ballot != null) {
+                          nav.pop();
+                        }
+                      }
                     },
                     child: const Text("Submit Vote"),
                   )
