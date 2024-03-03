@@ -23,4 +23,21 @@ class ElectionRepository {
 
     return [];
   }
+
+  static Future<ElectionDto?> getElection(String electionId) async {
+    final response = await http.get(
+      Uri.http("localhost:5238", "election/$electionId"),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        'Accept': '*/*'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return ElectionDto.fromJson(json.decode(response.body));
+    }
+
+    return null;
+  }
 }

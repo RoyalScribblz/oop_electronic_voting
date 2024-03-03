@@ -6,6 +6,7 @@ import 'package:oop_electronic_voting/data/models/cubit_models/user.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined_container.dart';
 import 'package:oop_electronic_voting/presentation/pages/sign_up_page/sign_up_page.dart';
+import 'package:oop_electronic_voting/presentation/pages/vote_with_code_page/vote_with_code_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/voter_home_page/voter_home_page.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/cubits/user_cubit.dart';
@@ -56,6 +57,18 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
                       innerPadding: 30,
                       children: [
                         Text("Log In"),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => const VoteWithCodePage())),
+                    child: const OutlinedContainer(
+                      maxWidth: 600,
+                      borderRadius: 20,
+                      innerPadding: 30,
+                      children: [
+                        Text("Vote with Code"),
                       ],
                     ),
                   ),

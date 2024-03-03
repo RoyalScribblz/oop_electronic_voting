@@ -14,7 +14,6 @@ ElectionDto _$ElectionDtoFromJson(Map<String, dynamic> json) => ElectionDto(
       candidates: (json['candidates'] as List<dynamic>)
           .map((e) => CandidateDto.fromJson(e as Map<String, dynamic>))
           .toList(),
-      voteCount: json['voteCount'] as int,
     );
 
 Map<String, dynamic> _$ElectionDtoToJson(ElectionDto instance) =>
@@ -24,5 +23,4 @@ Map<String, dynamic> _$ElectionDtoToJson(ElectionDto instance) =>
       'startTime': instance.startTime.toIso8601String(),
       'endTime': instance.endTime.toIso8601String(),
       'candidates': instance.candidates,
-      'voteCount': instance.voteCount,
     };

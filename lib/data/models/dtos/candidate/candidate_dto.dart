@@ -8,12 +8,14 @@ class CandidateDto {
   final String name;
   final String imageUrl;
   final String colour;
+  final int voteCount;
 
   CandidateDto({
     required this.candidateId,
     required this.name,
     required this.imageUrl,
     required this.colour,
+    required this.voteCount,
   });
 
   factory CandidateDto.fromJson(Map<String, dynamic> json) => _$CandidateDtoFromJson(json);
