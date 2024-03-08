@@ -96,7 +96,7 @@ class ElectionPreview extends StatelessWidget {
           onTap: () => nav.push(
             MaterialPageRoute(
               builder: (_) => BlocProvider(
-                create: (_) => VotePageCubit(election, voter),
+                create: (_) => VotePageCubit(election, voter.voterId),
                 child: const VotePage(),
               ),
             ),

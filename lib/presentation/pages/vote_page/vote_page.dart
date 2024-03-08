@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oop_electronic_voting/data/repositories/ballot_repository.dart';
 import 'package:oop_electronic_voting/data/repositories/contracts/ballot/create_ballot_request.dart';
-import 'package:oop_electronic_voting/extensions/list_extensions.dart';
 
 import '../../../data/models/dtos/ballot/ballot_dto.dart';
 import '../../../data/models/dtos/candidate/candidate_dto.dart';
@@ -34,7 +33,7 @@ class VotePage extends StatelessWidget {
                         BallotDto? ballot = await BallotRepository.createBallot(
                           CreateBallotRequest(
                             electionId: votePageCubit.state.election.electionId,
-                            voterId: votePageCubit.state.voter.voterId,
+                            voterId: votePageCubit.state.voterId,
                             candidateId: votePageCubit.state.selectedCandidate!.candidateId,
                           ),
                         );
@@ -72,7 +71,7 @@ class CandidateSelector extends StatelessWidget {
       child: Column(
         children: <Widget>[
           for (CandidateDto candidate
-              in votePageCubit.state.election.candidates.randomise())
+          in votePageCubit.state.election.candidates)
             ListTile(
               title: Text(candidate.name),
               leading: Radio<CandidateDto>(
