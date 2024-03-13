@@ -65,7 +65,7 @@ class _SignUpPageState extends State<SignUpPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                OutlinedContainer(
+                OutlinedColumn(
                   maxWidth: 600,
                   borderRadius: 20,
                   innerPadding: 30,

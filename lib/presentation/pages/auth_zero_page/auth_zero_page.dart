@@ -6,6 +6,7 @@ import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined
 import 'package:oop_electronic_voting/presentation/pages/sign_up_page/sign_up_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_with_code_page/vote_with_code_page.dart';
 import '../../controllers/cubits/user_cubit.dart';
+import '../admin_page/admin_page.dart';
 import '../home_page/home_page.dart';
 
 class AuthZeroPage extends StatefulWidget {
@@ -35,6 +36,8 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
   Widget build(BuildContext context) {
     IdentityCubit identityCubit = context.watch<IdentityCubit>();
 
+    return const AdminPage();
+
     if (identityCubit.state.credentials == null) {
       return Scaffold(
         body: SafeArea(
@@ -48,7 +51,7 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
                     onTap: () => _auth.loginWithRedirect(
                       redirectUrl: 'http://localhost:55298',
                     ),
-                    child: const OutlinedContainer(
+                    child: const OutlinedColumn(
                       maxWidth: 600,
                       borderRadius: 20,
                       innerPadding: 30,
@@ -60,7 +63,7 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => const VoteWithCodePage())),
-                    child: const OutlinedContainer(
+                    child: const OutlinedColumn(
                       maxWidth: 600,
                       borderRadius: 20,
                       innerPadding: 30,

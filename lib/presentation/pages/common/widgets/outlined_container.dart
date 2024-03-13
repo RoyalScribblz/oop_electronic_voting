@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class OutlinedContainer extends StatelessWidget {
+class OutlinedColumn extends StatelessWidget {
   final List<Widget> children;
   final double maxWidth;
   final double borderRadius;
   final double innerPadding;
 
-  const OutlinedContainer({
+  const OutlinedColumn({
     super.key,
     required this.maxWidth,
     required this.borderRadius,
