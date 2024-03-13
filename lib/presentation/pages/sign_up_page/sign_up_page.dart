@@ -1,14 +1,11 @@
-import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
-import 'package:provider/provider.dart';
 
 import '../../../data/models/cubit_models/user.dart';
-import '../../../data/models/dtos/voter/voter_dto.dart';
-import '../voter_home_page/voter_home_page.dart';
-import '../../../data/repositories/voter_repository.dart';
+import '../../../data/models/dtos/user/user_dto.dart';
+import '../home_page/home_page.dart';
 import '../common/widgets/outlined_container.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -49,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
   void initState() {
     super.initState();
 
-    User user = context.read<UserCubit>().state;
+    Identity user = context.read<IdentityCubit>().state;
     if (user.credentials?.user.email != null) {
       emailController.text = user.credentials!.user.email!;
     }
@@ -58,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     NavigatorState nav = Navigator.of(context);
-    UserCubit user = context.watch<UserCubit>();
+    IdentityCubit user = context.watch<IdentityCubit>();
 
     return Scaffold(
       body: SafeArea(
@@ -134,8 +131,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           return;
                         }
 
-                        VoterDto voter = VoterDto(
-                          voterId: user.state.credentials!.user.sub,
+                        UserDto newUser = UserDto(
+                          userId: user.state.credentials!.user.sub,
                           nationalId: nationalId,
                           firstName: firstName,
                           lastName: lastName,
@@ -148,7 +145,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           phoneNumber: phoneNumber,
                         );
 
-                        await user.createAndSetVoter(voter);
+                        await user.createAndSetUser(newUser);
 
                         await nav.push(MaterialPageRoute(
                           builder: (_) => MultiBlocProvider(
@@ -156,7 +153,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               BlocProvider(create: (_) => user),
                               BlocProvider(create: (_) => ElectionsCubit()),
                             ],
-                            child: const VoterHomePage(),
+                            child: const HomePage(),
                           ),
                         ));
                       },
@@ -171,15 +168,4 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-}
-
-class TestPage extends StatelessWidget {
-  const TestPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-
 }

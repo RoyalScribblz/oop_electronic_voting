@@ -6,11 +6,11 @@ import 'package:oop_electronic_voting/extensions/list_extensions.dart';
 import '../../../data/models/dtos/election/election_dto.dart';
 
 class VotePageCubit extends Cubit<VotePageData> {
-  VotePageCubit(ElectionDto election, String voterId)
-      : super(VotePageData(election, null, voterId)) {
+  VotePageCubit(ElectionDto election, String userId)
+      : super(VotePageData(election, null, userId)) {
     state.election.candidates.randomise();
   }
 
   void setSelectedCandidate(CandidateDto? candidateDto) =>
-      emit(VotePageData(state.election, candidateDto, state.voterId));
+      emit(VotePageData(state.election, candidateDto, state.userId));
 }

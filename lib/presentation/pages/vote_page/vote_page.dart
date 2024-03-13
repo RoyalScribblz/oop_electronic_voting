@@ -33,7 +33,7 @@ class VotePage extends StatelessWidget {
                         BallotDto? ballot = await BallotRepository.createBallot(
                           CreateBallotRequest(
                             electionId: votePageCubit.state.election.electionId,
-                            voterId: votePageCubit.state.voterId,
+                            userId: votePageCubit.state.userId,
                             candidateId: votePageCubit.state.selectedCandidate!.candidateId,
                           ),
                         );

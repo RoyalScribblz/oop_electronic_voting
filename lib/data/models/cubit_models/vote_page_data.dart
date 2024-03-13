@@ -4,11 +4,11 @@ import '../dtos/election/election_dto.dart';
 class VotePageData {
   final ElectionDto election;
   final CandidateDto? selectedCandidate;
-  final String voterId;
+  final String userId;
 
   VotePageData(
     this.election,
     this.selectedCandidate,
-    this.voterId,
+    this.userId,
   );
 }

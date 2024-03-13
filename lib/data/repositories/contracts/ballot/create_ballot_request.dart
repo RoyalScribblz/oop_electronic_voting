@@ -5,12 +5,12 @@ part 'create_ballot_request.g.dart';
 @JsonSerializable()
 class CreateBallotRequest {
   final String electionId;
-  final String voterId;
+  final String userId;
   final String candidateId;
 
   CreateBallotRequest({
     required this.electionId,
-    required this.voterId,
+    required this.userId,
     required this.candidateId,
   });
 

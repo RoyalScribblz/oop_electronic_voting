@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'voter_dto.dart';
+part of 'user_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-VoterDto _$VoterDtoFromJson(Map<String, dynamic> json) => VoterDto(
-      voterId: json['voterId'] as String,
+UserDto _$UserDtoFromJson(Map<String, dynamic> json) => UserDto(
+      userId: json['userId'] as String,
       nationalId: json['nationalId'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
@@ -20,8 +20,8 @@ VoterDto _$VoterDtoFromJson(Map<String, dynamic> json) => VoterDto(
       phoneNumber: json['phoneNumber'] as String,
     );
 
-Map<String, dynamic> _$VoterDtoToJson(VoterDto instance) => <String, dynamic>{
-      'voterId': instance.voterId,
+Map<String, dynamic> _$UserDtoToJson(UserDto instance) => <String, dynamic>{
+      'userId': instance.userId,
       'nationalId': instance.nationalId,
       'firstName': instance.firstName,
       'lastName': instance.lastName,

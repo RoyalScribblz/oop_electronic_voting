@@ -9,17 +9,17 @@ import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dar
 
 import '../../../data/models/dtos/candidate/candidate_dto.dart';
 import '../../../data/models/dtos/election/election_dto.dart';
-import '../../../data/models/dtos/voter/voter_dto.dart';
+import '../../../data/models/dtos/user/user_dto.dart';
 import '../../controllers/cubits/vote_page_cubit.dart';
 
-class VoterHomePage extends StatefulWidget {
-  const VoterHomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<VoterHomePage> createState() => _VoterHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _VoterHomePageState extends State<VoterHomePage> {
+class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
@@ -30,7 +30,7 @@ class _VoterHomePageState extends State<VoterHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    UserCubit userCubit = context.watch<UserCubit>();
+    IdentityCubit identityCubit = context.watch<IdentityCubit>();
 
     List<ElectionDto> completedElections = context
         .watch<ElectionsCubit>()
@@ -55,16 +55,16 @@ class _VoterHomePageState extends State<VoterHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Welcome ${userCubit.state.voter!.firstName}, you may vote in the following elections:",
+                  "Welcome ${identityCubit.state.user!.firstName}, you may vote in the following elections:",
                   style: const TextStyle(fontSize: 20),
                 ),
               ],
             ),
             for (ElectionDto election in activeElections)
-              ElectionPreview(election, userCubit.state.voter!),
+              ElectionPreview(election, identityCubit.state.user!),
             const Text("Finished Elections:", style: TextStyle(fontSize: 20)),
             for (ElectionDto election in completedElections)
-              ElectionPreview(election, userCubit.state.voter!),
+              ElectionPreview(election, identityCubit.state.user!),
           ],
         ),
       ),
@@ -74,11 +74,11 @@ class _VoterHomePageState extends State<VoterHomePage> {
 
 class ElectionPreview extends StatelessWidget {
   final ElectionDto election;
-  final VoterDto voter;
+  final UserDto user;
 
   const ElectionPreview(
     this.election,
-    this.voter, {
+    this.user, {
     super.key,
   });
 
@@ -96,7 +96,7 @@ class ElectionPreview extends StatelessWidget {
           onTap: () => nav.push(
             MaterialPageRoute(
               builder: (_) => BlocProvider(
-                create: (_) => VotePageCubit(election, voter.voterId),
+                create: (_) => VotePageCubit(election, user.userId),
                 child: const VotePage(),
               ),
             ),

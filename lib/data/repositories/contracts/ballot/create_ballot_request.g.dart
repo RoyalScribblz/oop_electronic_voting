@@ -9,7 +9,7 @@ part of 'create_ballot_request.dart';
 CreateBallotRequest _$CreateBallotRequestFromJson(Map<String, dynamic> json) =>
     CreateBallotRequest(
       electionId: json['electionId'] as String,
-      voterId: json['voterId'] as String,
+      userId: json['userId'] as String,
       candidateId: json['candidateId'] as String,
     );
 
@@ -17,6 +17,6 @@ Map<String, dynamic> _$CreateBallotRequestToJson(
         CreateBallotRequest instance) =>
     <String, dynamic>{
       'electionId': instance.electionId,
-      'voterId': instance.voterId,
+      'userId': instance.userId,
       'candidateId': instance.candidateId,
     };

@@ -1,13 +1,14 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 
-import '../dtos/voter/voter_dto.dart';
+import '../dtos/user/user_dto.dart';
 
-class User {
+
+class Identity {
   final Credentials? credentials;
-  final VoterDto? voter;
+  final UserDto? user;
 
-  User(
+  Identity(
     this.credentials,
-    this.voter,
+    this.user,
   );
 }

@@ -6,13 +6,13 @@ part 'ballot_dto.g.dart';
 class BallotDto {
   final String ballotId;
   final String electionId;
-  final String voterId;
+  final String userId;
   final String candidateId;
 
   BallotDto({
     required this.ballotId,
     required this.electionId,
-    required this.voterId,
+    required this.userId,
     required this.candidateId,
   });
 

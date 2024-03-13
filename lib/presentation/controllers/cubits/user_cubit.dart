@@ -1,25 +1,25 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/models/cubit_models/user.dart';
-import '../../../data/models/dtos/voter/voter_dto.dart';
-import '../../../data/repositories/voter_repository.dart';
+import '../../../data/models/dtos/user/user_dto.dart';
+import '../../../data/repositories/user_repository.dart';
 
-class UserCubit extends Cubit<User> {
-  UserCubit() : super(User(null, null));
+class IdentityCubit extends Cubit<Identity> {
+  IdentityCubit() : super(Identity(null, null));
 
-  Future setCredentialsAndVoter(Credentials? credentials) async {
-    VoterDto? voter;
+  Future updateIdentity(Credentials? credentials) async {
+    UserDto? user;
 
     if (credentials != null){
-      voter = await VoterRepository.getVoter(credentials.user.sub);
+      user = await UserRepository.getUser(credentials.user.sub);
     }
 
-    emit(User(credentials, voter));
+    emit(Identity(credentials, user));
   }
 
-  Future createAndSetVoter(VoterDto voter) async {
-    await VoterRepository.createVoter(voter);
+  Future createAndSetUser(UserDto user) async {
+    await UserRepository.createUser(user);
 
-    emit(User(state.credentials, voter));
+    emit(Identity(state.credentials, user));
   }
 }

@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../models/dtos/voter/voter_dto.dart';
+import '../models/dtos/user/user_dto.dart';
 
-class VoterRepository {
-  static Future createVoter(VoterDto createRequest) async {
+class UserRepository {
+  static Future createUser(UserDto createRequest) async {
     final response = await http.post(
-      Uri.http("localhost:5238", "voter"),
+      Uri.http("localhost:5238", "user"),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -21,13 +21,13 @@ class VoterRepository {
     }
   }
 
-  static Future<VoterDto?> getVoter(String? voterId) async {
-    if (voterId == null) {
+  static Future<UserDto?> getUser(String? userId) async {
+    if (userId == null) {
       return null;
     }
 
     final response = await http.get(
-      Uri.http("localhost:5238", "voter/$voterId"),
+      Uri.http("localhost:5238", "user/$userId"),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
@@ -36,8 +36,8 @@ class VoterRepository {
     );
 
     if (response.statusCode == 200) {
-      VoterDto voter = VoterDto.fromJson(json.decode(response.body));
-      return voter;
+      UserDto user = UserDto.fromJson(json.decode(response.body));
+      return user;
     }
 
     return null;

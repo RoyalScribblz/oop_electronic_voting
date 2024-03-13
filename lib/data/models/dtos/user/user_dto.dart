@@ -1,10 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'voter_dto.g.dart';
+part 'user_dto.g.dart';
 
 @JsonSerializable()
-class VoterDto {
-  final String voterId;
+class UserDto {
+  final String userId;
   final String nationalId;
   final String firstName;
   final String lastName;
@@ -16,8 +16,8 @@ class VoterDto {
   final String email;
   final String phoneNumber;
 
-  VoterDto({
-    required this.voterId,
+  UserDto({
+    required this.userId,
     required this.nationalId,
     required this.firstName,
     required this.lastName,
@@ -30,7 +30,7 @@ class VoterDto {
     required this.phoneNumber,
   });
 
-  factory VoterDto.fromJson(Map<String, dynamic> json) => _$VoterDtoFromJson(json);
+  factory UserDto.fromJson(Map<String, dynamic> json) => _$UserDtoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$VoterDtoToJson(this);
+  Map<String, dynamic> toJson() => _$UserDtoToJson(this);
 }

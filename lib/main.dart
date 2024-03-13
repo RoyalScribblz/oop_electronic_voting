@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(
         useMaterial3: true,
       ),
-      home: BlocProvider(create: (_) => UserCubit(),
+      home: BlocProvider(create: (_) => IdentityCubit(),
       child: const AuthZeroPage()),
     );
   }
