@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/dtos/user/user_dto.dart';
@@ -21,17 +22,14 @@ class UserRepository {
     }
   }
 
-  static Future<UserDto?> getUser(String? userId) async {
-    if (userId == null) {
-      return null;
-    }
-
+  static Future<UserDto?> getUser(Credentials credentials) async {
     final response = await http.get(
-      Uri.http("localhost:5238", "user/$userId"),
+      Uri.http("localhost:5238", "user/${credentials.user.sub}"),
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
-        'Accept': '*/*'
+        'Accept': '*/*',
+        'Authorization': 'Bearer ${credentials.accessToken}'
       },
     );
 

@@ -26,7 +26,7 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
   void initState() {
     super.initState();
 
-    _auth.onLoad().then((credentials) async {
+    _auth.onLoad(audience: "http://localhost:5238").then((credentials) async {
       IdentityCubit identityCubit = context.read<IdentityCubit>();
       await identityCubit.updateIdentity(credentials);
     });
@@ -36,7 +36,7 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
   Widget build(BuildContext context) {
     IdentityCubit identityCubit = context.watch<IdentityCubit>();
 
-    return const AdminPage();
+    //return const AdminPage();
 
     if (identityCubit.state.credentials == null) {
       return Scaffold(

@@ -11,7 +11,7 @@ class IdentityCubit extends Cubit<Identity> {
     UserDto? user;
 
     if (credentials != null){
-      user = await UserRepository.getUser(credentials.user.sub);
+      user = await UserRepository.getUser(credentials);
     }
 
     emit(Identity(credentials, user));
