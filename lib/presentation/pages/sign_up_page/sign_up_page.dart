@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oop_electronic_voting/data/repositories/contracts/user/create_user_request.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 
@@ -17,7 +18,6 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController dateOfBirthController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
 
   Future<void> _selectDateOfBirth(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -41,16 +41,6 @@ class _SignUpPageState extends State<SignUpPage> {
   String postcode = "";
   String country = "";
   String phoneNumber = "";
-
-  @override
-  void initState() {
-    super.initState();
-
-    Identity user = context.read<IdentityCubit>().state;
-    if (user.credentials?.user.email != null) {
-      emailController.text = user.credentials!.user.email!;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,10 +102,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       onChanged: (value) => country = value,
                     ),
                     TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(labelText: "Email"),
-                    ),
-                    TextField(
                       decoration:
                           const InputDecoration(labelText: "Phone Number"),
                       onChanged: (value) => phoneNumber = value,
@@ -131,8 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           return;
                         }
 
-                        UserDto newUser = UserDto(
-                          userId: user.state.credentials!.user.sub,
+                        CreateUserRequest newUser = CreateUserRequest(
                           nationalId: nationalId,
                           firstName: firstName,
                           lastName: lastName,
@@ -141,7 +126,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           address: address,
                           postcode: postcode,
                           country: country,
-                          email: emailController.text,
                           phoneNumber: phoneNumber,
                         );
 
