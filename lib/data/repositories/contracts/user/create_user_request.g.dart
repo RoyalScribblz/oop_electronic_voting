@@ -16,7 +16,6 @@ CreateUserRequest _$CreateUserRequestFromJson(Map<String, dynamic> json) =>
       address: json['address'] as String,
       postcode: json['postcode'] as String,
       country: json['country'] as String,
-      email: json['email'] as String,
       phoneNumber: json['phoneNumber'] as String,
     );
 
@@ -30,6 +29,5 @@ Map<String, dynamic> _$CreateUserRequestToJson(CreateUserRequest instance) =>
       'address': instance.address,
       'postcode': instance.postcode,
       'country': instance.country,
-      'email': instance.email,
       'phoneNumber': instance.phoneNumber,
     };
