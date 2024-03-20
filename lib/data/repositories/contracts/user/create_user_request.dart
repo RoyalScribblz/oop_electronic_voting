@@ -12,6 +12,7 @@ class CreateUserRequest {
   final String address;
   final String postcode;
   final String country;
+  final String email;
   final String phoneNumber;
 
   CreateUserRequest({
@@ -23,6 +24,7 @@ class CreateUserRequest {
     required this.address,
     required this.postcode,
     required this.country,
+    required this .email,
     required this.phoneNumber,
   });
 
