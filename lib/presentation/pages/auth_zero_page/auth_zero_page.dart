@@ -6,7 +6,6 @@ import 'package:oop_electronic_voting/presentation/pages/common/widgets/outlined
 import 'package:oop_electronic_voting/presentation/pages/sign_up_page/sign_up_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_with_code_page/vote_with_code_page.dart';
 import '../../controllers/cubits/user_cubit.dart';
-import '../admin_page/admin_page.dart';
 import '../home_page/home_page.dart';
 
 class AuthZeroPage extends StatefulWidget {
@@ -35,8 +34,6 @@ class _AuthZeroPageState extends State<AuthZeroPage> {
   @override
   Widget build(BuildContext context) {
     IdentityCubit identityCubit = context.watch<IdentityCubit>();
-
-    //return const AdminPage();
 
     if (identityCubit.state.credentials == null) {
       return Scaffold(

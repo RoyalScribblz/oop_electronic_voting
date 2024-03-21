@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:oop_electronic_voting/extensions/credentials_extensions.dart';
 import 'package:oop_electronic_voting/extensions/datetime_extensions.dart';
 import 'package:oop_electronic_voting/extensions/list_extensions.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
+import 'package:oop_electronic_voting/presentation/pages/admin_page/admin_page.dart';
 import 'package:oop_electronic_voting/presentation/pages/vote_page/vote_page.dart';
 
 import '../../../data/models/dtos/candidate/candidate_dto.dart';
@@ -30,6 +32,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    NavigatorState nav = Navigator.of(context);
+
     IdentityCubit identityCubit = context.watch<IdentityCubit>();
 
     List<ElectionDto> completedElections = context
@@ -51,6 +55,18 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: Column(
           children: [
+            if (identityCubit.state.credentials.isAdmin())
+              ElevatedButton(
+                onPressed: () => nav
+                    .push(MaterialPageRoute(builder: (_) => const AdminPage())),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text("Admin Panel"),
+                    Icon(Icons.arrow_forward),
+                  ],
+                ),
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -131,11 +147,11 @@ class ElectionPreview extends StatelessWidget {
                   Row(
                     children: [
                       const Text("Candidates:"),
-                      for (CandidateDto candidate in election.candidates.randomise())
+                      for (CandidateDto candidate
+                          in election.candidates.randomise())
                         Opacity(
-                          opacity: candidate.voteCount == highestVoteCount
-                              ? 1
-                              : 0.5,
+                          opacity:
+                              candidate.voteCount == highestVoteCount ? 1 : 0.5,
                           child: Row(
                             children: [
                               const SizedBox(width: 10),
