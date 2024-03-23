@@ -1,16 +1,34 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/create_election_cubit.dart';
 
+import '../../../data/repositories/contracts/candidate/candidate.dart';
 import '../common/widgets/outlined_container.dart';
 
-class AdminPage extends StatelessWidget {
+class AdminPage extends StatefulWidget {
   const AdminPage({super.key});
 
   @override
+  State<AdminPage> createState() => _AdminPageState();
+}
+
+class _AdminPageState extends State<AdminPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    CreateElectionCubit createElectionCubit =
+        context.read<CreateElectionCubit>();
+    createElectionCubit.getCandidates();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
+    CreateElectionCubit createElectionCubit =
+        context.watch<CreateElectionCubit>();
 
     return Scaffold(
       body: SafeArea(
@@ -26,221 +44,146 @@ class AdminPage extends StatelessWidget {
                     borderRadius: 20,
                     innerPadding: 30,
                     children: [
-                      const TextField(
-                          decoration: InputDecoration(labelText: "Name")),
-                      const TextField(
-                          decoration: InputDecoration(labelText: "Start Time")),
-                      const TextField(
-                          decoration: InputDecoration(labelText: "End Time")),
-                      Row(
-                        children: [
-                          Checkbox(value: true, onChanged: (_) => {}),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () => _colourPicker(context),
-                            child: Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                  color: Colors.primaries[Random()
-                                      .nextInt(Colors.primaries.length)],
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white)),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          const Text("Donald J. Trump"),
-                        ],
+                      const Text("Create a New Election:"),
+                      TextField(
+                        decoration: const InputDecoration(labelText: "Name"),
+                        onChanged: (value) =>
+                            createElectionCubit.updateName(value),
                       ),
-                      Row(
-                        children: [
-                          Checkbox(value: true, onChanged: (_) => {}),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () => _colourPicker(context),
-                            child: Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                  color: Colors.primaries[Random()
-                                      .nextInt(Colors.primaries.length)],
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white)),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          const Text("Donald J. Trump"),
-                        ],
+                      TextField(
+                        decoration:
+                            const InputDecoration(labelText: "Start Time"),
+                        onChanged: (value) =>
+                            createElectionCubit.updateStartTime(value),
                       ),
-                      Row(
-                        children: [
-                          Checkbox(value: true, onChanged: (_) => {}),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () => _colourPicker(context),
-                            child: Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                  color: Colors.primaries[Random()
-                                      .nextInt(Colors.primaries.length)],
-                                  shape: BoxShape.circle,
-                                  border: Border.all(color: Colors.white)),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          const Text("Donald J. Trump"),
-                        ],
+                      TextField(
+                        decoration:
+                            const InputDecoration(labelText: "End Time"),
+                        onChanged: (value) =>
+                            createElectionCubit.updateEndTime(value),
                       ),
-                      ElevatedButton(onPressed: () => {}, child: const Text("Create Election"))
+                      for (MapEntry<Candidate, bool> candidateMap
+                          in createElectionCubit.state.candidates.entries)
+                        CandidateSelector(candidateMap, createElectionCubit),
+                      ElevatedButton(
+                        onPressed: () async => await createElectionCubit.createElection(),
+                        child: const Text("Create Election"),
+                      )
                     ],
                   ),
                 ],
               ),
             ),
-            Expanded(
+            const Expanded(
               child: Column(
                 children: [
-                  const Text("Election Results:"),
-                  OutlinedColumn(
-                    maxWidth: 600,
-                    borderRadius: 20,
-                    innerPadding: 10,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text("Cool Election"),
-                          const SizedBox(width: 10),
-                          DataTable(
-                            border: TableBorder(
-                              left: BorderSide(color: theme.colorScheme.outlineVariant, width: 1)
-                            ),
-                            columns: const [
-                              DataColumn(label: Text("James")),
-                              DataColumn(
-                                  label: Text(
-                                "Moe",
-                                style: TextStyle(color: Colors.green),
-                              )),
-                              DataColumn(label: Text("Freddie")),
-                            ],
-                            rows: const [
-                              DataRow(
-                                cells: [
-                                  DataCell(Text("12%")),
-                                  DataCell(Text("73%")),
-                                  DataCell(Text("15%")),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  OutlinedColumn(
-                    maxWidth: 600,
-                    borderRadius: 20,
-                    innerPadding: 10,
-                    children: [
-                      DataTable(
-                        columns: const [
-                          DataColumn(label: Text("Election")),
-                          DataColumn(label: VerticalDivider(width: 0, indent: 0, thickness: 1)),
-                          DataColumn(label: Text("James")),
-                          DataColumn(
-                              label: Text(
-                                "Moe",
-                                style: TextStyle(color: Colors.green),
-                              )),
-                          DataColumn(label: Text("Freddie")),
-                        ],
-                        rows: const [
-                          DataRow(
-                            cells: [
-                              DataCell(Text("Cool Election")),
-                              DataCell(VerticalDivider(width: 0, indent: 0, thickness: 1)),
-                              DataCell(Text("12%")),
-                              DataCell(Text("73%")),
-                              DataCell(Text("15%")),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  OutlinedColumn(
-                    maxWidth: 600,
-                    borderRadius: 20,
-                    innerPadding: 10,
-                    children: [
-                      DataTable(
-                        columns: const [
-                          DataColumn(label: Text("Election")),
-                          DataColumn(label: VerticalDivider(width: 0, indent: 0, thickness: 1)),
-                          DataColumn(label: Text("James")),
-                          DataColumn(
-                              label: Text(
-                                "Moe",
-                                style: TextStyle(color: Colors.green),
-                              )),
-                          DataColumn(label: Text("Freddie")),
-                        ],
-                        rows: const [
-                          DataRow(
-                            cells: [
-                              DataCell(Text("Cool Election")),
-                              DataCell(VerticalDivider(width: 0, indent: 0, thickness: 1)),
-                              DataCell(Text("12%")),
-                              DataCell(Text("73%")),
-                              DataCell(Text("15%")),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  OutlinedColumn(
-                    maxWidth: 600,
-                    borderRadius: 20,
-                    innerPadding: 10,
-                    children: [
-                      DataTable(
-                        columns: const [
-                          DataColumn(label: Text("Election")),
-                          DataColumn(label: VerticalDivider(width: 0, indent: 0, thickness: 1)),
-                          DataColumn(label: Text("James")),
-                          DataColumn(
-                              label: Text(
-                                "Moe",
-                                style: TextStyle(color: Colors.green),
-                              )),
-                          DataColumn(label: Text("Freddie")),
-                        ],
-                        rows: const [
-                          DataRow(
-                            cells: [
-                              DataCell(Text("Cool Election")),
-                              DataCell(VerticalDivider(width: 0, indent: 0, thickness: 1)),
-                              DataCell(Text("12%")),
-                              DataCell(Text("73%")),
-                              DataCell(Text("15%")),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  Text("Election Results:"),
+                  ElectionResultPercentage(),
+                  SizedBox(height: 10),
+                  ElectionResultPercentage(),
+                  SizedBox(height: 10),
+                  ElectionResultPercentage(),
+                  SizedBox(height: 10),
+                  ElectionResultPercentage(),
                 ],
               ),
             )
           ],
         ),
       ),
+    );
+  }
+}
+
+class CandidateSelector extends StatelessWidget {
+  final MapEntry<Candidate, bool> candidateMap;
+  final CreateElectionCubit createElectionCubit;
+
+  const CandidateSelector(
+    this.candidateMap,
+    this.createElectionCubit, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Checkbox(
+            value: candidateMap.value,
+            onChanged: (value) {
+              if (value == null) {
+                return;
+              }
+
+              createElectionCubit.toggleCandidate(candidateMap.key, value);
+            }),
+        // TODO create candidate
+        // const SizedBox(width: 10),
+        // GestureDetector(
+        //   onTap: () => _colourPicker(context),
+        //   child: Container(
+        //     width: 20,
+        //     height: 20,
+        //     decoration: BoxDecoration(
+        //         color: Colors.primaries[Random()
+        //             .nextInt(Colors.primaries.length)],
+        //         shape: BoxShape.circle,
+        //         border: Border.all(color: Colors.white)),
+        //   ),
+        // ),
+        const SizedBox(width: 10),
+        Text(candidateMap.key.name),
+      ],
+    );
+  }
+}
+
+class ElectionResultPercentage extends StatelessWidget {
+  const ElectionResultPercentage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return OutlinedColumn(
+      maxWidth: 600,
+      borderRadius: 20,
+      innerPadding: 10,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("Cool Election"),
+            const SizedBox(width: 10),
+            DataTable(
+              border: TableBorder(
+                  left: BorderSide(
+                      color: theme.colorScheme.outlineVariant, width: 1)),
+              columns: const [
+                DataColumn(label: Text("James")),
+                DataColumn(
+                    label: Text(
+                  "Moe",
+                  style: TextStyle(color: Colors.green),
+                )),
+                DataColumn(label: Text("Freddie")),
+              ],
+              rows: const [
+                DataRow(
+                  cells: [
+                    DataCell(Text("12%")),
+                    DataCell(Text("73%")),
+                    DataCell(Text("15%")),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:oop_electronic_voting/extensions/credentials_extensions.dart';
 import 'package:oop_electronic_voting/extensions/datetime_extensions.dart';
 import 'package:oop_electronic_voting/extensions/list_extensions.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/create_election_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/user_cubit.dart';
 import 'package:oop_electronic_voting/presentation/pages/admin_page/admin_page.dart';
@@ -57,8 +58,10 @@ class _HomePageState extends State<HomePage> {
           children: [
             if (identityCubit.state.credentials.isAdmin())
               ElevatedButton(
-                onPressed: () => nav
-                    .push(MaterialPageRoute(builder: (_) => const AdminPage())),
+                onPressed: () => nav.push(MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                        create: (_) => CreateElectionCubit(identityCubit.state.credentials!),
+                        child: const AdminPage()))),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
