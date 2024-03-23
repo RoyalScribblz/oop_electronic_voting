@@ -59,9 +59,12 @@ class _HomePageState extends State<HomePage> {
             if (identityCubit.state.credentials.isAdmin())
               ElevatedButton(
                 onPressed: () => nav.push(MaterialPageRoute(
-                    builder: (_) => BlocProvider(
-                        create: (_) => CreateElectionCubit(identityCubit.state.credentials!),
-                        child: const AdminPage()))),
+                    builder: (_) => MultiBlocProvider(providers: [
+                          BlocProvider(
+                              create: (_) => CreateElectionCubit(
+                                  identityCubit.state.credentials!)),
+                          BlocProvider(create: (_) => ElectionsCubit())
+                        ], child: const AdminPage()))),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -80,10 +83,10 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             for (ElectionDto election in activeElections)
-              ElectionPreview(election, identityCubit.state.user!),
+              ElectionPreview(election, identityCubit),
             const Text("Finished Elections:", style: TextStyle(fontSize: 20)),
             for (ElectionDto election in completedElections)
-              ElectionPreview(election, identityCubit.state.user!),
+              ElectionPreview(election, identityCubit),
           ],
         ),
       ),
@@ -93,11 +96,11 @@ class _HomePageState extends State<HomePage> {
 
 class ElectionPreview extends StatelessWidget {
   final ElectionDto election;
-  final UserDto user;
+  final IdentityCubit identityCubit;
 
   const ElectionPreview(
     this.election,
-    this.user, {
+    this.identityCubit, {
     super.key,
   });
 
@@ -115,7 +118,11 @@ class ElectionPreview extends StatelessWidget {
           onTap: () => nav.push(
             MaterialPageRoute(
               builder: (_) => BlocProvider(
-                create: (_) => VotePageCubit(election, user.userId),
+                create: (_) => VotePageCubit(
+                  election,
+                  identityCubit.state.user!.userId,
+                  identityCubit.state.credentials!,
+                ),
                 child: const VotePage(),
               ),
             ),

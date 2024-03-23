@@ -1,9 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:oop_electronic_voting/data/models/dtos/candidate/candidate_dto.dart';
+import 'package:oop_electronic_voting/data/models/dtos/election/election_dto.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/create_election_cubit.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 
 import '../../../data/repositories/contracts/candidate/candidate.dart';
 import '../common/widgets/outlined_container.dart';
@@ -23,12 +24,27 @@ class _AdminPageState extends State<AdminPage> {
     CreateElectionCubit createElectionCubit =
         context.read<CreateElectionCubit>();
     createElectionCubit.getCandidates();
+
+    ElectionsCubit electionsCubit = context.read<ElectionsCubit>();
+    electionsCubit.getElections();
   }
 
   @override
   Widget build(BuildContext context) {
     CreateElectionCubit createElectionCubit =
         context.watch<CreateElectionCubit>();
+
+    List<ElectionDto> completedElections = context
+        .watch<ElectionsCubit>()
+        .state
+        .where((e) => e.endTime.isBefore(DateTime.now()))
+        .toList();
+
+    List<ElectionDto> activeElections = context
+        .watch<ElectionsCubit>()
+        .state
+        .where((e) => !completedElections.contains(e))
+        .toList();
 
     return Scaffold(
       body: SafeArea(
@@ -66,7 +82,8 @@ class _AdminPageState extends State<AdminPage> {
                           in createElectionCubit.state.candidates.entries)
                         CandidateSelector(candidateMap, createElectionCubit),
                       ElevatedButton(
-                        onPressed: () async => await createElectionCubit.createElection(),
+                        onPressed: () async =>
+                            await createElectionCubit.createElection(),
                         child: const Text("Create Election"),
                       )
                     ],
@@ -74,17 +91,14 @@ class _AdminPageState extends State<AdminPage> {
                 ],
               ),
             ),
-            const Expanded(
+            Expanded(
               child: Column(
                 children: [
-                  Text("Election Results:"),
-                  ElectionResultPercentage(),
-                  SizedBox(height: 10),
-                  ElectionResultPercentage(),
-                  SizedBox(height: 10),
-                  ElectionResultPercentage(),
-                  SizedBox(height: 10),
-                  ElectionResultPercentage(),
+                  // const Text("Election Results:"),
+                  // for (ElectionDto election in activeElections)
+                  //   ElectionResultPercentage(election),
+                  for (ElectionDto election in completedElections)
+                    ElectionResultPercentage(election),
                 ],
               ),
             )
@@ -140,13 +154,22 @@ class CandidateSelector extends StatelessWidget {
 }
 
 class ElectionResultPercentage extends StatelessWidget {
-  const ElectionResultPercentage({
+  final ElectionDto election;
+
+  const ElectionResultPercentage(
+    this.election, {
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+
+    final highestVoteCount = election.candidates
+        .fold<int>(0, (max, obj) => obj.voteCount > max ? obj.voteCount : max);
+
+    final totalVotes =
+        election.candidates.fold(0, (sum, item) => sum + item.voteCount);
 
     return OutlinedColumn(
       maxWidth: 600,
@@ -156,27 +179,28 @@ class ElectionResultPercentage extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text("Cool Election"),
+            Text(election.name),
             const SizedBox(width: 10),
             DataTable(
               border: TableBorder(
                   left: BorderSide(
                       color: theme.colorScheme.outlineVariant, width: 1)),
-              columns: const [
-                DataColumn(label: Text("James")),
-                DataColumn(
+              columns: [
+                for (CandidateDto candidate in election.candidates)
+                  DataColumn(
                     label: Text(
-                  "Moe",
-                  style: TextStyle(color: Colors.green),
-                )),
-                DataColumn(label: Text("Freddie")),
+                      candidate.name,
+                      style: candidate.voteCount == highestVoteCount
+                          ? const TextStyle(color: Colors.green)
+                          : null,
+                    ),
+                  ),
               ],
-              rows: const [
+              rows: [
                 DataRow(
                   cells: [
-                    DataCell(Text("12%")),
-                    DataCell(Text("73%")),
-                    DataCell(Text("15%")),
+                    for (CandidateDto candidate in election.candidates)
+                      DataCell(Text("${(candidate.voteCount/totalVotes).toStringAsFixed(1)}%")),
                   ],
                 ),
               ],

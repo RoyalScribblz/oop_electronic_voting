@@ -34,7 +34,7 @@ class VoteWithCodePage extends StatelessWidget {
 
             await nav.push(MaterialPageRoute(
               builder: (_) => BlocProvider(
-                create: (_) => VotePageCubit(election, qrCode.qrCodeId),
+                create: (_) => VotePageCubit(election, qrCode.qrCodeId, null),
                 child: const VotePage(),
               ),
             ));

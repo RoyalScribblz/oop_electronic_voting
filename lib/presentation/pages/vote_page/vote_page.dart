@@ -29,6 +29,10 @@ class VotePage extends StatelessWidget {
                   ),
                   OutlinedButton(
                     onPressed: () async {
+                      if (votePageCubit.state.credentials == null) {
+                        throw Exception("TODO deal with qr auth");
+                      }
+
                       if (votePageCubit.state.selectedCandidate != null) {
                         BallotDto? ballot = await BallotRepository.createBallot(
                           CreateBallotRequest(
@@ -36,6 +40,7 @@ class VotePage extends StatelessWidget {
                             userId: votePageCubit.state.userId,
                             candidateId: votePageCubit.state.selectedCandidate!.candidateId,
                           ),
+                          votePageCubit.state.credentials!
                         );
 
                         if (ballot != null) {
