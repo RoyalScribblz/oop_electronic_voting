@@ -8,6 +8,7 @@ import '../../../data/repositories/user_repository.dart';
 class IdentityCubit extends Cubit<Identity> {
   IdentityCubit() : super(Identity(null, null));
 
+  // TODO rename all updateX to setX
   Future updateIdentity(Credentials? credentials) async {
     UserDto? user;
 

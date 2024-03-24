@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:oop_electronic_voting/data/models/dtos/candidate/candidate_dto.dart';
 import 'package:oop_electronic_voting/data/models/dtos/election/election_dto.dart';
+import 'package:oop_electronic_voting/presentation/controllers/cubits/create_candidate_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/create_election_cubit.dart';
 import 'package:oop_electronic_voting/presentation/controllers/cubits/elections_cubit.dart';
 
@@ -17,6 +20,8 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
+  TextEditingController candidateColourController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -34,12 +39,16 @@ class _AdminPageState extends State<AdminPage> {
     CreateElectionCubit createElectionCubit =
         context.watch<CreateElectionCubit>();
 
+    CreateCandidateCubit createCandidateCubit =
+        context.watch<CreateCandidateCubit>();
+
     List<ElectionDto> completedElections = context
         .watch<ElectionsCubit>()
         .state
         .where((e) => e.endTime.isBefore(DateTime.now()))
         .toList();
 
+    // TODO probably should display these so you know when one is successfully created
     List<ElectionDto> activeElections = context
         .watch<ElectionsCubit>()
         .state
@@ -88,6 +97,51 @@ class _AdminPageState extends State<AdminPage> {
                       )
                     ],
                   ),
+                  const SizedBox(height: 20),
+                  OutlinedColumn(
+                    maxWidth: 600,
+                    borderRadius: 20,
+                    innerPadding: 30,
+                    children: [
+                      const Text("Create a New Candidate:"),
+                      TextField(
+                        decoration: const InputDecoration(labelText: "Name"),
+                        onChanged: (value) =>
+                            createCandidateCubit.setName(value),
+                      ),
+                      TextField(
+                        decoration:
+                            const InputDecoration(labelText: "Image URL"),
+                        onChanged: (value) =>
+                            createCandidateCubit.setImageUrl(value),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          labelText: "Colour",
+                          suffixIcon: GestureDetector(
+                            onTap: () => _colourPicker(
+                                context,
+                                candidateColourController,
+                                createCandidateCubit),
+                            child: Container(
+                              width: 15,
+                              height: 15,
+                              decoration: BoxDecoration(
+                                color: createCandidateCubit.getColour(),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        ),
+                        controller: candidateColourController,
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () async => await createCandidateCubit.createCandidate(),
+                        child: const Text("Create Candidate"),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -124,28 +178,16 @@ class CandidateSelector extends StatelessWidget {
     return Row(
       children: [
         Checkbox(
-            value: candidateMap.value,
-            onChanged: (value) {
-              if (value == null) {
-                return;
-              }
+          value: candidateMap.value,
+          onChanged: (value) {
+            if (value == null) {
+              return;
+            }
 
-              createElectionCubit.toggleCandidate(candidateMap.key, value);
-            }),
-        // TODO create candidate
-        // const SizedBox(width: 10),
-        // GestureDetector(
-        //   onTap: () => _colourPicker(context),
-        //   child: Container(
-        //     width: 20,
-        //     height: 20,
-        //     decoration: BoxDecoration(
-        //         color: Colors.primaries[Random()
-        //             .nextInt(Colors.primaries.length)],
-        //         shape: BoxShape.circle,
-        //         border: Border.all(color: Colors.white)),
-        //   ),
-        // ),
+            createElectionCubit.toggleCandidate(candidateMap.key, value);
+          },
+        ),
+        CircleAvatar(backgroundImage: NetworkImage(candidateMap.key.imageUrl)),
         const SizedBox(width: 10),
         Text(candidateMap.key.name),
       ],
@@ -200,7 +242,8 @@ class ElectionResultPercentage extends StatelessWidget {
                 DataRow(
                   cells: [
                     for (CandidateDto candidate in election.candidates)
-                      DataCell(Text("${(candidate.voteCount/totalVotes).toStringAsFixed(1)}%")),
+                      DataCell(Text(
+                          "${(candidate.voteCount / totalVotes).toStringAsFixed(1)}%")),
                   ],
                 ),
               ],
@@ -212,21 +255,31 @@ class ElectionResultPercentage extends StatelessWidget {
   }
 }
 
-Future<void> _colourPicker(BuildContext context) {
+Future<void> _colourPicker(
+    BuildContext context,
+    TextEditingController controller,
+    CreateCandidateCubit createCandidateCubit) {
   return showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         content: SingleChildScrollView(
           child: ColorPicker(
-            pickerColor: Colors.red,
-            onColorChanged: (_) => {},
+            pickerColor: createCandidateCubit.getColour(),
+            onColorChanged: (value) {
+              var colour = '${value.red.toRadixString(16).padLeft(2, '0')}'
+                  '${value.green.toRadixString(16).padLeft(2, '0')}'
+                  '${value.blue.toRadixString(16).padLeft(2, '0')}';
+
+              controller.text = colour;
+            },
           ),
         ),
         actions: <Widget>[
           ElevatedButton(
             child: const Text('Select'),
             onPressed: () {
+              createCandidateCubit.setColour(controller.text);
               Navigator.of(context).pop();
             },
           ),

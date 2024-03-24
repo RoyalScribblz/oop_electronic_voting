@@ -8,15 +8,20 @@ import '../models/dtos/ballot/ballot_dto.dart';
 
 class BallotRepository {
   static Future<BallotDto?> createBallot(
-      CreateBallotRequest createRequest, Credentials credentials) async {
+      CreateBallotRequest createRequest, Credentials? credentials) async {
+    var headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/json',
+      'Accept': '*/*',
+    };
+
+    if (credentials != null) {
+      headers['Authorization'] = 'Bearer ${credentials.accessToken}';
+    }
+
     final response = await http.post(
       Uri.http("localhost:5238", "ballot"),
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        'Accept': '*/*',
-        'Authorization': 'Bearer ${credentials.accessToken}'
-      },
+      headers: headers,
       body: jsonEncode(createRequest.toJson()),
     );
 
